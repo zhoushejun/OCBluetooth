@@ -1,0 +1,44 @@
+//
+//  OCBluetooth.pch
+//  OCBluetooth
+//
+//  Created by zhoushejun on 14-10-22.
+//  Copyright (c) 2014年 shejun.zhou. All rights reserved.
+//
+
+#ifndef OCBluetooth_OCBluetooth_pch
+#define OCBluetooth_OCBluetooth_pch
+#import "OCTool.h"
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+/** @name DEBUG 模式下打印日志和当前行数 */
+// @{
+#if DEBUG
+#define NSLog(FORMAT, ...) fprintf(stderr,"\nfunction:%s line:%d content--->>> \n%s\n", __FUNCTION__, __LINE__, [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
+#define NSLogCurrentFunction fprintf(stderr,"\nfunction:%s line:%d", __FUNCTION__, __LINE__);
+#else
+#define NSLog(FORMAT, ...) nil
+#endif
+// @}end of DEBUG 模式下打印日志和当前行数
+
+/** @name 获取屏幕 宽度、高度 */
+// @{
+/** @attention 勿删 */
+#define SCREEN_WIDTH  ([UIScreen mainScreen].bounds.size.width)
+#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+// @}end of 获取屏幕 宽度、高度
+
+/** @name version */
+// @{
+#define CurrentDevice [UIDevice currentDevice]
+#define CurrentSystemVersion [CurrentDevice systemVersion]
+#define IOS_VERSION [CurrentSystemVersion floatValue]
+// @}end of version
+
+/** @name 状态栏 高度 */
+// @{
+#define STATUSBAR_HEIGHT (IOS_VERSION < 7.0?20:0)
+// @}end of 状态栏 高度
+
+#endif

@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180F5E3719FCFB8400AD47CD /* OCTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 180F5E3619FCFB8400AD47CD /* OCTool.m */; };
 		18A5913E19F695D400EA4F65 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5913D19F695D400EA4F65 /* main.m */; };
 		18A5914119F695D400EA4F65 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5914019F695D400EA4F65 /* AppDelegate.m */; };
 		18A5914919F695D400EA4F65 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A5914819F695D400EA4F65 /* Images.xcassets */; };
 		18A5914C19F695D400EA4F65 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18A5914A19F695D400EA4F65 /* LaunchScreen.xib */; };
 		18A5915819F695D400EA4F65 /* OCBluetoothTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5915719F695D400EA4F65 /* OCBluetoothTests.m */; };
-		18A5916819F6A16000EA4F65 /* OBBTLECentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5916719F6A16000EA4F65 /* OBBTLECentralManager.m */; };
 		18A5916B19F6A19E00EA4F65 /* OCMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A5916919F6A19E00EA4F65 /* OCMainViewController.m */; };
+		18A5916D19F6A28300EA4F65 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A5916C19F6A28300EA4F65 /* CoreBluetooth.framework */; };
+		18AC72B619F81073006E39EA /* OCBTLECentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC72B519F81073006E39EA /* OCBTLECentralManager.m */; };
+		18AC72B919F81259006E39EA /* OCBTLEPeripheralService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		180F5E3519FCFB8400AD47CD /* OCTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCTool.h; sourceTree = "<group>"; };
+		180F5E3619FCFB8400AD47CD /* OCTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCTool.m; sourceTree = "<group>"; };
 		18A5913819F695D400EA4F65 /* OCBluetooth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCBluetooth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A5913C19F695D400EA4F65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18A5913D19F695D400EA4F65 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -37,10 +42,14 @@
 		18A5915119F695D400EA4F65 /* OCBluetoothTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OCBluetoothTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A5915619F695D400EA4F65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18A5915719F695D400EA4F65 /* OCBluetoothTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OCBluetoothTests.m; sourceTree = "<group>"; };
-		18A5916619F6A16000EA4F65 /* OBBTLECentralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBBTLECentralManager.h; sourceTree = "<group>"; };
-		18A5916719F6A16000EA4F65 /* OBBTLECentralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBBTLECentralManager.m; sourceTree = "<group>"; };
 		18A5916919F6A19E00EA4F65 /* OCMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCMainViewController.m; sourceTree = "<group>"; };
 		18A5916A19F6A19E00EA4F65 /* OCMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMainViewController.h; sourceTree = "<group>"; };
+		18A5916C19F6A28300EA4F65 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		18A5916F19F6BC7100EA4F65 /* OCBluetooth.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBluetooth.pch; sourceTree = "<group>"; };
+		18AC72B419F81073006E39EA /* OCBTLECentralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBTLECentralManager.h; sourceTree = "<group>"; };
+		18AC72B519F81073006E39EA /* OCBTLECentralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBTLECentralManager.m; sourceTree = "<group>"; };
+		18AC72B719F81259006E39EA /* OCBTLEPeripheralService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBTLEPeripheralService.h; sourceTree = "<group>"; };
+		18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBTLEPeripheralService.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18A5916D19F6A28300EA4F65 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +74,7 @@
 		18A5912F19F695D400EA4F65 = {
 			isa = PBXGroup;
 			children = (
+				18A5916C19F6A28300EA4F65 /* CoreBluetooth.framework */,
 				18A5913A19F695D400EA4F65 /* OCBluetooth */,
 				18A5915419F695D400EA4F65 /* OCBluetoothTests */,
 				18A5913919F695D400EA4F65 /* Products */,
@@ -84,12 +95,16 @@
 			children = (
 				18A5913F19F695D400EA4F65 /* AppDelegate.h */,
 				18A5914019F695D400EA4F65 /* AppDelegate.m */,
+				180F5E3519FCFB8400AD47CD /* OCTool.h */,
+				180F5E3619FCFB8400AD47CD /* OCTool.m */,
 				18A5914819F695D400EA4F65 /* Images.xcassets */,
 				18A5914A19F695D400EA4F65 /* LaunchScreen.xib */,
 				18A5916A19F6A19E00EA4F65 /* OCMainViewController.h */,
 				18A5916919F6A19E00EA4F65 /* OCMainViewController.m */,
-				18A5916619F6A16000EA4F65 /* OBBTLECentralManager.h */,
-				18A5916719F6A16000EA4F65 /* OBBTLECentralManager.m */,
+				18AC72B419F81073006E39EA /* OCBTLECentralManager.h */,
+				18AC72B519F81073006E39EA /* OCBTLECentralManager.m */,
+				18AC72B719F81259006E39EA /* OCBTLEPeripheralService.h */,
+				18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */,
 				18A5913B19F695D400EA4F65 /* Supporting Files */,
 			);
 			path = OCBluetooth;
@@ -98,6 +113,7 @@
 		18A5913B19F695D400EA4F65 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				18A5916F19F6BC7100EA4F65 /* OCBluetooth.pch */,
 				18A5913C19F695D400EA4F65 /* Info.plist */,
 				18A5913D19F695D400EA4F65 /* main.m */,
 			);
@@ -220,10 +236,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18A5916819F6A16000EA4F65 /* OBBTLECentralManager.m in Sources */,
+				18AC72B619F81073006E39EA /* OCBTLECentralManager.m in Sources */,
 				18A5914119F695D400EA4F65 /* AppDelegate.m in Sources */,
 				18A5913E19F695D400EA4F65 /* main.m in Sources */,
+				18AC72B919F81259006E39EA /* OCBTLEPeripheralService.m in Sources */,
 				18A5916B19F6A19E00EA4F65 /* OCMainViewController.m in Sources */,
+				180F5E3719FCFB8400AD47CD /* OCTool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,7 +309,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -327,7 +345,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -339,6 +357,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: zl chen (MN2J7UMTD2)";
+				GCC_PREFIX_HEADER = OCBluetooth/OCBluetooth.pch;
 				INFOPLIST_FILE = OCBluetooth/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -349,6 +369,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = OCBluetooth/OCBluetooth.pch;
 				INFOPLIST_FILE = OCBluetooth/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -51,4 +51,9 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (void)applicationSignificantTimeChange:(UIApplication *)application {
+    NSDate *date = [NSDate date];
+    [OCTool addALaryerOnWindow:[NSString stringWithFormat:@"%@", date]];
+}
+
 @end
