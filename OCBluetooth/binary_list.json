@@ -1,0 +1,12 @@
+{
+    "binaries": [
+                 {
+                 "title": "ble_app_v1.13",
+                 "filename": "ble_app_v1.13",
+                 "extension": "bin",
+                 "size": 38016,
+                 "kit": "nRF6310"
+                 }
+               ]
+
+}

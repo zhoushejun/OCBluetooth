@@ -40,6 +40,8 @@
 @synthesize service = _service;
 @synthesize dataWrite = _dataWrite;
 
+@synthesize dataFirware = _dataFirware;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -248,6 +250,7 @@
         return;
     }
     self.service = service;
+    [self readFileData];
 }
 
 - (void)writeValue{
@@ -400,5 +403,27 @@
     [self writeValue:val];
 }
 
+#pragma mark - 读取文件数据
+
+- (void)readFileData{
+    NSError *error;
+    NSData *jsonData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"binary_list"
+                                                                             withExtension:@"json"]];
+    NSDictionary *d = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                      options:kNilOptions
+                                                        error:&error];
+    if (!error) {
+        NSArray *arrBinaries = [d objectForKey:@"binaries"];
+        NSDictionary *dicBinary = [arrBinaries firstObject];
+        NSURL *urlFirware = [[NSBundle mainBundle] URLForResource:[dicBinary objectForKey:@"filename"]
+                                                    withExtension:[dicBinary objectForKey:@"extension"]];
+        self.dataFirware = [NSData dataWithContentsOfURL:urlFirware];
+        
+    }else{
+        NSLog(@"error:%@", error);
+    }
+   
+    
+}
 
 @end

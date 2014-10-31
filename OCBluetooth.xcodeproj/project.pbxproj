@@ -17,6 +17,10 @@
 		18A5916D19F6A28300EA4F65 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A5916C19F6A28300EA4F65 /* CoreBluetooth.framework */; };
 		18AC72B619F81073006E39EA /* OCBTLECentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC72B519F81073006E39EA /* OCBTLECentralManager.m */; };
 		18AC72B919F81259006E39EA /* OCBTLEPeripheralService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */; };
+		63C8B0C01A0112A500A352CC /* binary_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 63C8B0BF1A0112A500A352CC /* binary_list.json */; };
+		63C8B0C21A0112AC00A352CC /* ble_app_v1.28.bin in Resources */ = {isa = PBXBuildFile; fileRef = 63C8B0C11A0112AC00A352CC /* ble_app_v1.28.bin */; };
+		63C8B0C41A0112B100A352CC /* ble_app_v1.27.bin in Resources */ = {isa = PBXBuildFile; fileRef = 63C8B0C31A0112B100A352CC /* ble_app_v1.27.bin */; };
+		63C8B0C61A0112B700A352CC /* ble_app_v1.13.bin in Resources */ = {isa = PBXBuildFile; fileRef = 63C8B0C51A0112B700A352CC /* ble_app_v1.13.bin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,10 @@
 		18AC72B519F81073006E39EA /* OCBTLECentralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBTLECentralManager.m; sourceTree = "<group>"; };
 		18AC72B719F81259006E39EA /* OCBTLEPeripheralService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBTLEPeripheralService.h; sourceTree = "<group>"; };
 		18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBTLEPeripheralService.m; sourceTree = "<group>"; };
+		63C8B0BF1A0112A500A352CC /* binary_list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = binary_list.json; sourceTree = "<group>"; };
+		63C8B0C11A0112AC00A352CC /* ble_app_v1.28.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = ble_app_v1.28.bin; sourceTree = "<group>"; };
+		63C8B0C31A0112B100A352CC /* ble_app_v1.27.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = ble_app_v1.27.bin; sourceTree = "<group>"; };
+		63C8B0C51A0112B700A352CC /* ble_app_v1.13.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = ble_app_v1.13.bin; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +121,10 @@
 		18A5913B19F695D400EA4F65 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				63C8B0BF1A0112A500A352CC /* binary_list.json */,
+				63C8B0C51A0112B700A352CC /* ble_app_v1.13.bin */,
+				63C8B0C31A0112B100A352CC /* ble_app_v1.27.bin */,
+				63C8B0C11A0112AC00A352CC /* ble_app_v1.28.bin */,
 				18A5916F19F6BC7100EA4F65 /* OCBluetooth.pch */,
 				18A5913C19F695D400EA4F65 /* Info.plist */,
 				18A5913D19F695D400EA4F65 /* main.m */,
@@ -217,8 +229,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63C8B0C41A0112B100A352CC /* ble_app_v1.27.bin in Resources */,
+				63C8B0C01A0112A500A352CC /* binary_list.json in Resources */,
+				63C8B0C21A0112AC00A352CC /* ble_app_v1.28.bin in Resources */,
 				18A5914C19F695D400EA4F65 /* LaunchScreen.xib in Resources */,
 				18A5914919F695D400EA4F65 /* Images.xcassets in Resources */,
+				63C8B0C61A0112B700A352CC /* ble_app_v1.13.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

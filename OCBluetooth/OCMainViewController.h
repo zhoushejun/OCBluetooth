@@ -17,6 +17,8 @@
 @property (nonatomic, retain) OCBTLEPeripheralService *service;
 @property (nonatomic, retain) NSData *dataWrite;
 
+@property (nonatomic, retain) NSData *dataFirware;
+
 /** 搜索外设 */
 - (void)scanningPeriphral;
 //
