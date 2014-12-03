@@ -34,9 +34,9 @@
 
 @implementation OCMainViewController
 @synthesize arrayData = _arrayData;
-@synthesize textView = _textView;
 @synthesize tableView = _tableView;
-@synthesize textField = _textField;
+@synthesize textFieldDemand = _textFieldDemand;
+@synthesize textFieldDevice = _textFieldDevice;
 @synthesize service = _service;
 @synthesize dataWrite = _dataWrite;
 
@@ -86,25 +86,27 @@
     [btnUpdateFirmware addTarget:self action:@selector(btnUpdateFirmware:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnUpdateFirmware];
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(180, 160, 120, 44)];
-    textField.backgroundColor = [UIColor grayColor];
-    textField.textColor = [UIColor  whiteColor];
-    textField.textAlignment = NSTextAlignmentCenter;
+    UITextField *textFieldDemand = [[UITextField alloc] initWithFrame:CGRectMake(180, 160, 120, 44)];
+    textFieldDemand.backgroundColor = [UIColor grayColor];
+    textFieldDemand.textColor = [UIColor  whiteColor];
+    textFieldDemand.textAlignment = NSTextAlignmentCenter;
 //    textField.delegate = self;
-    textField.keyboardType = UIKeyboardTypeDefault;
-    textField.text = @"0x07";
-    self.textField = textField;
-    [self.view addSubview:self.textField];
+    textFieldDemand.keyboardType = UIKeyboardTypeDefault;
+    textFieldDemand.text = @"0x07";
+    self.textFieldDemand = textFieldDemand;
+    [self.view addSubview:self.textFieldDemand];
     
-    /*
-    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 200, 300, SCREEN_HEIGHT - 200-10)];
-    textView.backgroundColor = [UIColor orangeColor];
-    textView.textColor = [UIColor grayColor];
-    textView.userInteractionEnabled = NO;
-    textView.text = @"test";
-    self.textView = textView;
-    [self.view addSubview:self.textView];*/
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 200, 300, SCREEN_HEIGHT - 200-10)];
+    UITextField *textFieldDevice = [[UITextField alloc] initWithFrame:CGRectMake(180, 210, 120, 44)];
+    textFieldDevice.backgroundColor = [UIColor grayColor];
+    textFieldDevice.textColor = [UIColor  whiteColor];
+    textFieldDevice.textAlignment = NSTextAlignmentCenter;
+//    textField.delegate = self;
+    textFieldDevice.keyboardType = UIKeyboardTypeDefault;
+    textFieldDevice.text = @"C31A";
+    self.textFieldDevice = textFieldDevice;
+    [self.view addSubview:self.textFieldDevice];
+
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 300, 300, SCREEN_HEIGHT - 300-10)];
     tableView.dataSource = self;
     tableView.delegate = self;
     self.tableView = tableView;
@@ -119,25 +121,14 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
 }
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return [self.arrayData count];
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *strCellId = @"strCellId";
@@ -147,17 +138,19 @@
     }
     cell.textLabel.text = [NSString stringWithFormat:@"%@", [self.arrayData objectAtIndex:indexPath.row]];
     cell.textLabel.numberOfLines = 0;
+    cell.textLabel.font = [UIFont systemFontOfSize:12.f];
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 160;
+    return 60;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
+    [self connectPerphral:indexPath.row];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -228,18 +221,22 @@
     if (![[[OCBTLECentralManager shareCentralManager] arrFoundPeripherals] containsObject:peripheral]){
         [[[OCBTLECentralManager shareCentralManager] arrFoundPeripherals] addObject:peripheral];
     }
+    [self.tableView reloadData];
 }
 
 - (void)serviceDidConnect:(OCBTLEPeripheralService*)service{
+    NSLogCurrentFunction
     self.service = service;
     [self.service start];
+    [self.service.peripheral readRSSI];
 }
 
 - (void)serviceDidFailToConnect:(CBPeripheral *)peripheral{
 }
 
 - (void)serviceDidDisconnect:(OCBTLEPeripheralService*)service{
-    
+    NSLogCurrentFunction
+    [self cleanUpPeriphral];
 }
 
 - (void)peripheralDidReadValue:(OCBTLEPeripheralService *)service
@@ -250,7 +247,6 @@
         return;
     }
     self.service = service;
-    [self readFileData];
 }
 
 - (void)writeValue{
@@ -277,21 +273,28 @@
 
 #pragma mark - interactions
 
+- (void)textFieldResignFirstResponder {
+    [self.textFieldDemand resignFirstResponder];
+    [self.textFieldDevice resignFirstResponder];
+}
+
 - (void)btnScanningPress:(id)sender{
+    NSTimeInterval time = [NSDate timeIntervalSinceReferenceDate];
     NSLog(@"搜索蓝牙");
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(scanningPeriphral) object:sender];
     [self performSelector:@selector(scanningPeriphral) withObject:sender afterDelay:0.2f];
+    NSLog(@"%lf", 1000*([NSDate timeIntervalSinceReferenceDate] - time));
 }
 
 - (void)btnCleanUp:(id)sender{
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(cleanUpPeriphral) object:sender];
     [self performSelector:@selector(cleanUpPeriphral) withObject:sender afterDelay:0.2f];
 }
 
 - (void)btnConnect:(id)sender{
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectPerphral) object:sender];
     [self performSelector:@selector(connectPerphral) withObject:sender afterDelay:0.2f];
     
@@ -299,21 +302,20 @@
 
 - (void)btnDisconnect:(id)sender{
     NSLogCurrentFunction;
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(disconnectPerphral) object:sender];
     [self performSelector:@selector(disconnectPerphral) withObject:sender afterDelay:0.2f];
 }
 
 - (void)btnUpdateFirmware:(id)sender{
     NSLogCurrentFunction;
-    [self.textField resignFirstResponder];
+    [self textFieldResignFirstResponder];
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(disconnectPerphral) object:sender];
     [self performSelector:@selector(updatePerphral) withObject:sender afterDelay:0.2f];
 }
 
 - (void)resetTextView:(NSNotification *)notify{
     NSLog(@"%@", notify.object);
-    self.textView.text = [NSString stringWithFormat:@"%@", notify.object];
     if (!self.arrayData) {
         NSMutableArray *arr = [NSMutableArray array];
         self.arrayData = arr;
@@ -326,7 +328,21 @@
 #pragma mark - 
 
 - (void)scanningPeriphral{
+    NSString *str = self.textFieldDevice.text;
+    /*if (str == nil || [str isEqualToString:@""]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"请输入设备 4 字符ID", @"请输入设备ID")
+                                                            message:nil
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"确定", @"确定")
+                                                  otherButtonTitles:nil];
+        [alertView show];
+        return;
+    }*/
+    [self cleanUpPeriphral];
     OCBTLECentralManager *CentralManager = [OCBTLECentralManager shareCentralManager];
+    if (!(str == nil || [str isEqualToString:@""])) {
+        CentralManager.strDeviceName = str;
+    }
     if (!CentralManager.peripheralDelegate) {
         CentralManager.peripheralDelegate = self;
     }
@@ -341,10 +357,10 @@
     [self.tableView reloadData];
 }
 
-- (void)connectPerphral{
+- (void)connectPerphral:(NSInteger)index{
     OCBTLECentralManager *ble = [OCBTLECentralManager shareCentralManager];
     if ([ble.arrFoundPeripherals count] > 0) {
-        [ble connectPeripheral:[ble.arrFoundPeripherals lastObject]];
+        [ble connectPeripheral:ble.arrFoundPeripherals[index]];
     }
 }
 
@@ -369,19 +385,23 @@
         return;
     }
    
-    NSString *str = self.textField.text;
+    NSString *str = self.textFieldDemand.text;
     if (str != nil && ![str isEqualToString:@""]) {
         UInt8 n = strtoll([str UTF8String], nil, 16);
         [self writeValue:n];
     }else{
-        [self writeValue:0x0b];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"请输入指令", @"请输入指令")
+                                                            message:nil
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"确定", @"确定")
+                                                  otherButtonTitles:nil];
+        [alertView show];
     }
-    
 }
 
 -(void)writeValue:(UInt8)val_p
 {
-    NSLog(@"%hhu", val_p);
+    NSLog(@"%#04x", val_p);
     if (!self.service) {
         NSLog(@"service is nil");
         return;
@@ -401,29 +421,6 @@
 {
     UInt8 val =0x09;
     [self writeValue:val];
-}
-
-#pragma mark - 读取文件数据
-
-- (void)readFileData{
-    NSError *error;
-    NSData *jsonData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"binary_list"
-                                                                             withExtension:@"json"]];
-    NSDictionary *d = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                      options:kNilOptions
-                                                        error:&error];
-    if (!error) {
-        NSArray *arrBinaries = [d objectForKey:@"binaries"];
-        NSDictionary *dicBinary = [arrBinaries firstObject];
-        NSURL *urlFirware = [[NSBundle mainBundle] URLForResource:[dicBinary objectForKey:@"filename"]
-                                                    withExtension:[dicBinary objectForKey:@"extension"]];
-        self.dataFirware = [NSData dataWithContentsOfURL:urlFirware];
-        
-    }else{
-        NSLog(@"error:%@", error);
-    }
-   
-    
 }
 
 @end

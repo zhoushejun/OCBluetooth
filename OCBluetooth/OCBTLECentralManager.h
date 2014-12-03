@@ -14,6 +14,7 @@
 
 @property (nonatomic, assign) CBCentralManagerState previousState;  ///< 中心管理者之前的状态
 @property (nonatomic, strong) NSString *strDeviceType;              ///< 硬件设备类型
+@property (nonatomic, strong) NSString *strDeviceName;              ///< 硬件设备名称：4字符ID
 @property (nonatomic, strong) NSMutableDictionary *dicPeripherals;  ///<
 
 /****************************************************************************/

@@ -9,16 +9,17 @@
 #import "OCBTLEPeripheralService.h"
 
 /** kBLEPeripheralUUIDString为nil,则会扫瞄所有的可连接设备; 可以指定一个CBUUID对象 从而只扫瞄注册用指定服务的设备 */
-/*NSString *kBLEPeripheralUUIDString = @"4EEFFDDF-ABFB-8275-B3D3-0FC84D3E879C";
+//NSString *kBLEPeripheralUUIDString = @"4EEFFDDF-ABFB-8275-B3D3-0FC84D3E879C";
+NSString *kBLEPeripheralUUIDString = nil;
 NSString *kBLEPeripheralServicesUUIDString = @"6e400001-b5a3-f393-e0a9-e50e24dcca9e";
 NSString *kBLEPeripheralWriteCharacteristicUUIDString = @"6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-NSString *kBLEPeripheralReadCharacteristicUUIDString = @"6e400003-b5a3-f393-e0a9-e50e24dcca9e";*/
-
+NSString *kBLEPeripheralReadCharacteristicUUIDString = @"6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+/*
 NSString *kBLEPeripheralUUIDString = @"4EEFFDDF-ABFB-8275-B3D3-0FC84D3E879C";
 NSString *kBLEPeripheralServicesUUIDString = @"00001530-1212-EFDE-1523-785FEABCD123";//空中升级：长按21秒
 NSString *kBLEPeripheralWriteCharacteristicUUIDString = @"00001532-1212-EFDE-1523-785FEABCD123";
 NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523-785FEABCD123";
-
+*/
 @interface OCBTLEPeripheralService ()<CBPeripheralDelegate>{
 @private
     CBPeripheral		*servicePeripheral;
@@ -51,8 +52,10 @@ NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523
         servicePeripheral = peripheral;
         servicePeripheral.delegate = self;
         peripheralDelegate = controller;
+        if (kBLEPeripheralUUIDString) {
+            peripheralUUID	= [CBUUID UUIDWithString:kBLEPeripheralUUIDString];
+        }
         
-        peripheralUUID	= [CBUUID UUIDWithString:kBLEPeripheralUUIDString];
         peripheralServiceUUID = [CBUUID UUIDWithString:kBLEPeripheralServicesUUIDString];
         readCharacteristicUUID = [CBUUID UUIDWithString:kBLEPeripheralReadCharacteristicUUIDString];
         writeCharacteristicUUID	= [CBUUID UUIDWithString:kBLEPeripheralWriteCharacteristicUUIDString];
@@ -75,6 +78,10 @@ NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523
 }
 
 #pragma mark - CBPeripheralDelegate
+
+- (void)peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error{
+    NSLogCurrentFunction
+}
 
 /** 查询到蓝牙设备服务回调函数 */
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error{
@@ -147,7 +154,7 @@ NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523
 
 /** 处理蓝牙设备发过来的数据 */
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
-    NSLogCurrentFunction;
+//    NSLogCurrentFunction;
     if (peripheral != servicePeripheral) {
         NSLog(@"Wrong peripheral\n");
         return ;
@@ -175,8 +182,10 @@ NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523
 
 /** 给蓝牙设备发数据 */
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
-    NSLogCurrentFunction;
-    NSLog(@"write error = %@",[error description]);
+//    NSLogCurrentFunction;
+    if (error) {
+        NSLog(@"write error = %@",[error description]);
+    }
     [peripheral readValueForCharacteristic:characteristic];
 }
 

@@ -18,6 +18,7 @@
 @synthesize centralManager = _centralManager;
 @synthesize previousState;
 @synthesize strDeviceType = _strDeviceType;
+@synthesize strDeviceName = _strDeviceName;
 @synthesize dicPeripherals = _dicPeripherals;
 @synthesize arrFoundPeripherals = _arrFoundPeripherals;
 @synthesize arrConnectedPeripherals = _arrConnectedPeripherals;
@@ -90,11 +91,24 @@
 
 /** 扫描到设备的回调 */
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI{
-    NSLogCurrentFunction;
-    if ([self.arrFoundPeripherals count] > 0) {
-        [self stopScanning];
-        return;
+//    NSLogCurrentFunction;
+    NSString *strPerName = [NSString stringWithFormat:@"%@", peripheral.name];
+    strPerName = [strPerName uppercaseString];
+//    if ([strPerName rangeOfString:@"STAR"].length > 0 || [strPerName rangeOfString:@"HB"].length > 0) {
+//        return;
+//    }
+    if (self.strDeviceName) {
+        NSString *strDevName = [NSString stringWithFormat:@"%@", self.strDeviceName];
+        strDevName = [strDevName uppercaseString];
+        if ([strPerName rangeOfString:strDevName].length <= 0) {
+            return;
+        }
     }
+    
+//    if ([self.arrFoundPeripherals count] > 0) {
+//        [self stopScanning];
+//        return;
+//    }
     if (![self.arrFoundPeripherals containsObject:peripheral]) {
         [self.arrFoundPeripherals addObject:peripheral];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetTextView" object:self.arrFoundPeripherals];
@@ -108,7 +122,7 @@
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral{
     NSLogCurrentFunction;
     NSLog(@"连接上设备:%@", peripheral.name);
-    [self.centralManager stopScan];
+//    [self.centralManager stopScan];
     OCBTLEPeripheralService *service = [[OCBTLEPeripheralService alloc] initWithPeripheral:peripheral controller:peripheralDelegate];
     [service start];
     service.strDeviceTag = [NSString stringWithFormat:@"%@", self.strDeviceType];
