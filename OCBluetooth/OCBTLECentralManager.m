@@ -54,8 +54,10 @@
     if (strUUID) {
         arrUUID = [NSMutableArray arrayWithObjects:[CBUUID UUIDWithString:strUUID] ,nil];
     }
-    NSDictionary *dicOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
-    [self.centralManager scanForPeripheralsWithServices:arrUUID options:dicOptions];
+    NSDictionary *dicOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
+                                                           forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
+    [self.centralManager scanForPeripheralsWithServices:arrUUID
+                                                options:dicOptions];
 }
 
 - (void)stopScanning{
@@ -91,13 +93,9 @@
 
 /** 扫描到设备的回调 */
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI{
-//    NSLogCurrentFunction;
     NSString *strPerName = [NSString stringWithFormat:@"%@", peripheral.name];
     strPerName = [strPerName uppercaseString];
-//    if ([strPerName rangeOfString:@"STAR"].length > 0 || [strPerName rangeOfString:@"HB"].length > 0) {
-//        return;
-//    }
-    if (self.strDeviceName) {
+    if (self.strDeviceName && ![self.strDeviceName isEqualToString:@""]) {
         NSString *strDevName = [NSString stringWithFormat:@"%@", self.strDeviceName];
         strDevName = [strDevName uppercaseString];
         if ([strPerName rangeOfString:strDevName].length <= 0) {
@@ -105,10 +103,6 @@
         }
     }
     
-//    if ([self.arrFoundPeripherals count] > 0) {
-//        [self stopScanning];
-//        return;
-//    }
     if (![self.arrFoundPeripherals containsObject:peripheral]) {
         [self.arrFoundPeripherals addObject:peripheral];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"resetTextView" object:self.arrFoundPeripherals];
@@ -122,21 +116,17 @@
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral{
     NSLogCurrentFunction;
     NSLog(@"连接上设备:%@", peripheral.name);
-//    [self.centralManager stopScan];
     OCBTLEPeripheralService *service = [[OCBTLEPeripheralService alloc] initWithPeripheral:peripheral controller:peripheralDelegate];
     [service start];
     service.strDeviceTag = [NSString stringWithFormat:@"%@", self.strDeviceType];
     if (![self.arrConnectedPeripherals containsObject:service]) {
         [self.arrConnectedPeripherals addObject:service];
     }
-    /*if ([self.arrFoundPeripherals containsObject:peripheral]) {
-        [self.arrFoundPeripherals removeObject:peripheral];
-    }*/
+
     if ([self.peripheralDelegate respondsToSelector:@selector(serviceDidConnect:)]) {
         [self.peripheralDelegate serviceDidConnect:service];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"resetTextView" object:self.arrFoundPeripherals];
-//    [self.peripheralDelegate serviceDidConnect:service];
 }
 
 /** 连接失败的回调 */

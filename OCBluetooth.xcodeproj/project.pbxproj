@@ -93,18 +93,10 @@
 		18A5913A19F695D400EA4F65 /* OCBluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				18A5913F19F695D400EA4F65 /* AppDelegate.h */,
-				18A5914019F695D400EA4F65 /* AppDelegate.m */,
-				180F5E3519FCFB8400AD47CD /* OCTool.h */,
-				180F5E3619FCFB8400AD47CD /* OCTool.m */,
-				18A5914819F695D400EA4F65 /* Images.xcassets */,
-				18A5914A19F695D400EA4F65 /* LaunchScreen.xib */,
-				18A5916A19F6A19E00EA4F65 /* OCMainViewController.h */,
-				18A5916919F6A19E00EA4F65 /* OCMainViewController.m */,
-				18AC72B419F81073006E39EA /* OCBTLECentralManager.h */,
-				18AC72B519F81073006E39EA /* OCBTLECentralManager.m */,
-				18AC72B719F81259006E39EA /* OCBTLEPeripheralService.h */,
-				18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */,
+				633677CF1A3AB4C3009EBC4A /* Public */,
+				633677CE1A3AB4A3009EBC4A /* Model */,
+				633677CD1A3AB49B009EBC4A /* View */,
+				633677CC1A3AB490009EBC4A /* ViewController */,
 				18A5913B19F695D400EA4F65 /* Supporting Files */,
 			);
 			path = OCBluetooth;
@@ -116,6 +108,10 @@
 				18A5916F19F6BC7100EA4F65 /* OCBluetooth.pch */,
 				18A5913C19F695D400EA4F65 /* Info.plist */,
 				18A5913D19F695D400EA4F65 /* main.m */,
+				18A5913F19F695D400EA4F65 /* AppDelegate.h */,
+				18A5914019F695D400EA4F65 /* AppDelegate.m */,
+				18A5914819F695D400EA4F65 /* Images.xcassets */,
+				18A5914A19F695D400EA4F65 /* LaunchScreen.xib */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -135,6 +131,58 @@
 				18A5915619F695D400EA4F65 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		633677CC1A3AB490009EBC4A /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				633677D11A3AB506009EBC4A /* MainViewController */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		633677CD1A3AB49B009EBC4A /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		633677CE1A3AB4A3009EBC4A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				633677D01A3AB4E1009EBC4A /* BTLE */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		633677CF1A3AB4C3009EBC4A /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				180F5E3519FCFB8400AD47CD /* OCTool.h */,
+				180F5E3619FCFB8400AD47CD /* OCTool.m */,
+			);
+			name = Public;
+			sourceTree = "<group>";
+		};
+		633677D01A3AB4E1009EBC4A /* BTLE */ = {
+			isa = PBXGroup;
+			children = (
+				18AC72B419F81073006E39EA /* OCBTLECentralManager.h */,
+				18AC72B519F81073006E39EA /* OCBTLECentralManager.m */,
+				18AC72B719F81259006E39EA /* OCBTLEPeripheralService.h */,
+				18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */,
+			);
+			name = BTLE;
+			sourceTree = "<group>";
+		};
+		633677D11A3AB506009EBC4A /* MainViewController */ = {
+			isa = PBXGroup;
+			children = (
+				18A5916A19F6A19E00EA4F65 /* OCMainViewController.h */,
+				18A5916919F6A19E00EA4F65 /* OCMainViewController.m */,
+			);
+			name = MainViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -357,6 +405,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: shejun zhou (8PWTUU9C83)";
 				GCC_PREFIX_HEADER = OCBluetooth/OCBluetooth.pch;
 				INFOPLIST_FILE = OCBluetooth/Info.plist;
@@ -370,6 +419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: shejun zhou (8PWTUU9C83)";
 				GCC_PREFIX_HEADER = OCBluetooth/OCBluetooth.pch;
 				INFOPLIST_FILE = OCBluetooth/Info.plist;

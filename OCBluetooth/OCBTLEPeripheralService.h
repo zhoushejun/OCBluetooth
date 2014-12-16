@@ -6,6 +6,13 @@
 //  Copyright (c) 2014年 shejun.zhou. All rights reserved.
 //
 
+/*!
+ @file      OCBTLEPeripheralService.h
+ @brief     设备服务管理者
+ @author    shejun.zhou
+ @version   1.0.0
+ */
+
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 

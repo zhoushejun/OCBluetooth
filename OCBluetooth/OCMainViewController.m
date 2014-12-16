@@ -12,65 +12,59 @@
 /** @name const */
 // @{
 #define UNSUPORTBLUETOOTH_4_0 @"您的设备不支持蓝牙4.0"
+/** 搜索的设备名称 */
+#define DEFAULT_DEVICE_NAME @"C31A"
+/** 向手环发送的命令 */
+#define SEND_COMMAND @"0x24"
 // @}end of const
-
-/****************************************************************************/
-/*						Service Characteristics								*/
-/****************************************************************************/
-/** kBLEPeripheralUUIDString为nil,则会扫瞄所有的可连接设备; 可以指定一个CBUUID对象 从而只扫瞄注册用指定服务的设备 */
-//NSString *kBLEPeripheralUUIDString = @"00001530-1212-EFDE-1523-785FEABCD123";//按21秒后进入空中升级模式的设备UUID
-//NSString *kBLEPeripheralUUIDString = nil;
-/**  */
-//NSString *kBLEPeripheralServicesUUIDString;
-/**  */
-//NSString *kBLEPeripheralReadCharacteristicUUIDString;
-/**  */
-//NSString *kBLEPeripheralWriteCharacteristicUUIDString;
 
 @interface OCMainViewController ()
 
-@property (nonatomic, strong) NSMutableArray *arrayData;
+@property (nonatomic, strong) NSMutableData *mutableData;   ///< 存储手环返回来的数据
+@property (nonatomic, strong) NSMutableArray *arrayData;    ///< 存储搜索到的蓝牙设备
+@property (nonatomic, strong) UIButton *btnScanning;        ///< 搜索蓝牙设备/停止搜索蓝牙设备
+@property (nonatomic, strong) UIButton *btnConnect;         ///< 连接蓝牙/断开蓝牙 btn
+
 @end
 
 @implementation OCMainViewController
+@synthesize mutableData = _mutableData;
 @synthesize arrayData = _arrayData;
+@synthesize btnScanning = _btnScanning;
+@synthesize btnConnect = _btnConnect;
 @synthesize tableView = _tableView;
 @synthesize textFieldDemand = _textFieldDemand;
 @synthesize textFieldDevice = _textFieldDevice;
 @synthesize service = _service;
 @synthesize dataWrite = _dataWrite;
 
-@synthesize dataFirware = _dataFirware;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    _mutableData = [NSMutableData dataWithCapacity:40];
+    
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     btn.frame = CGRectMake(20, 60, 120, 44);
     btn.backgroundColor = [UIColor grayColor];
+    btn.tag = 1001;     ///< 1001:搜索蓝牙   1002:停止搜索蓝牙
     [btn setTitle:@"搜索蓝牙" forState:UIControlStateNormal];
     btn.titleLabel.textColor = [UIColor orangeColor];
     btn.titleLabel.textAlignment = NSTextAlignmentCenter;
     [btn addTarget:self action:@selector(btnScanningPress:) forControlEvents:UIControlEventTouchUpInside];
+    self.btnScanning = btn;
     [self.view addSubview:btn];
     
-    UIButton *btnConnect = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnConnect.frame = CGRectMake(180, 60, 120, 44);
-    btnConnect.backgroundColor = [UIColor grayColor];
-    [btnConnect setTitle:@"连接蓝牙" forState:UIControlStateNormal];
-    btnConnect.titleLabel.textColor = [UIColor orangeColor];
-    btnConnect.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [btnConnect addTarget:self action:@selector(btnConnect:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btnConnect];
-    
-    UIButton *btnDisconnect = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnDisconnect.frame = CGRectMake(180, 110, 120, 44);
-    btnDisconnect.backgroundColor = [UIColor grayColor];
-    [btnDisconnect setTitle:@"断开蓝牙" forState:UIControlStateNormal];
-    btnDisconnect.titleLabel.textColor = [UIColor orangeColor];
-    btnDisconnect.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [btnDisconnect addTarget:self action:@selector(btnDisconnect:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btnDisconnect];
+    UIButton *btnCnt = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnCnt.frame = CGRectMake(180, 60, 120, 44);
+    btnCnt.backgroundColor = [UIColor grayColor];
+    btnCnt.tag = 1001;  ///< 2001:连接蓝牙  2001:断开蓝牙
+    [btnCnt setTitle:@"连接蓝牙" forState:UIControlStateNormal];
+    btnCnt.titleLabel.textColor = [UIColor orangeColor];
+    btnCnt.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [btnCnt addTarget:self action:@selector(btnConnect:) forControlEvents:UIControlEventTouchUpInside];
+    self.btnConnect = btnCnt;
+    [self.view addSubview:btnCnt];
     
     UIButton *btnCleanUp = [UIButton buttonWithType:UIButtonTypeCustom];
     btnCleanUp.frame = CGRectMake(20, 110, 120, 44);
@@ -81,10 +75,20 @@
     
     UIButton *btnUpdateFirmware = [UIButton buttonWithType:UIButtonTypeCustom];
     btnUpdateFirmware.frame = CGRectMake(20, 160, 120, 44);
-    [btnUpdateFirmware setTitle:@"空中升级" forState:UIControlStateNormal];
+    [btnUpdateFirmware setTitle:@"发送指令" forState:UIControlStateNormal];
     btnUpdateFirmware.backgroundColor = [UIColor grayColor];
     [btnUpdateFirmware addTarget:self action:@selector(btnUpdateFirmware:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnUpdateFirmware];
+    
+    UITextField *textFieldDevice = [[UITextField alloc] initWithFrame:CGRectMake(180, 110, 120, 44)];
+    textFieldDevice.backgroundColor = [UIColor grayColor];
+    textFieldDevice.textColor = [UIColor  whiteColor];
+    textFieldDevice.textAlignment = NSTextAlignmentCenter;
+    //    textField.delegate = self;
+    textFieldDevice.keyboardType = UIKeyboardTypeDefault;
+    textFieldDevice.text = DEFAULT_DEVICE_NAME;
+    self.textFieldDevice = textFieldDevice;
+    [self.view addSubview:self.textFieldDevice];
     
     UITextField *textFieldDemand = [[UITextField alloc] initWithFrame:CGRectMake(180, 160, 120, 44)];
     textFieldDemand.backgroundColor = [UIColor grayColor];
@@ -92,20 +96,10 @@
     textFieldDemand.textAlignment = NSTextAlignmentCenter;
 //    textField.delegate = self;
     textFieldDemand.keyboardType = UIKeyboardTypeDefault;
-    textFieldDemand.text = @"0x07";
+    textFieldDemand.text = SEND_COMMAND;
     self.textFieldDemand = textFieldDemand;
     [self.view addSubview:self.textFieldDemand];
     
-    UITextField *textFieldDevice = [[UITextField alloc] initWithFrame:CGRectMake(180, 210, 120, 44)];
-    textFieldDevice.backgroundColor = [UIColor grayColor];
-    textFieldDevice.textColor = [UIColor  whiteColor];
-    textFieldDevice.textAlignment = NSTextAlignmentCenter;
-//    textField.delegate = self;
-    textFieldDevice.keyboardType = UIKeyboardTypeDefault;
-    textFieldDevice.text = @"C31A";
-    self.textFieldDevice = textFieldDevice;
-    [self.view addSubview:self.textFieldDevice];
-
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 300, 300, SCREEN_HEIGHT - 300-10)];
     tableView.dataSource = self;
     tableView.delegate = self;
@@ -161,48 +155,45 @@
 - (void)centralManagerDidUpdateState:(CBCentralManagerState)state{
     NSString *strState = nil;
     switch (state) {
-        case CBCentralManagerStateUnknown:
-        {
-        strState = @"手机蓝牙处于未知(即初始)状态";
+        case CBCentralManagerStateUnknown:{
+            strState = @"手机蓝牙处于未知(即初始)状态";
         break;
         }
             
-        case CBCentralManagerStateResetting:
-        {
-        strState = @"手机蓝牙处于正在重围状态";
+        case CBCentralManagerStateResetting:{
+            strState = @"手机蓝牙处于正在重围状态";
         break;
         }
             
-        case CBCentralManagerStateUnsupported:
-        {
-        strState = @"手机蓝牙处于不支持状态";
+        case CBCentralManagerStateUnsupported:{
+            strState = @"手机蓝牙处于不支持状态";
         break;
         }
             
-        case CBCentralManagerStateUnauthorized:
-        {
-        strState = @"手机蓝牙处于未授权状态";
+        case CBCentralManagerStateUnauthorized:{
+            strState = @"手机蓝牙处于未授权状态";
         break;
         }
             
-        case CBCentralManagerStatePoweredOff:
-        {
-        strState = @"手机蓝牙处于关闭状态";
+        case CBCentralManagerStatePoweredOff:{
+            strState = @"手机蓝牙处于关闭状态";
         
         break;
         }
             
-        case CBCentralManagerStatePoweredOn:
-        {
-        strState = @"手机蓝牙处于开启(可用)状态";
+        case CBCentralManagerStatePoweredOn:{
+            strState = @"手机蓝牙处于开启(可用)状态";
         [self scanningPeriphral];
         break;
         }
             
-        default:
-        {
-        UIAlertView *alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:UNSUPORTBLUETOOTH_4_0 delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-        [alertV show];
+        default:{
+            UIAlertView *alertV = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                             message:UNSUPORTBLUETOOTH_4_0
+                                                            delegate:nil
+                                                   cancelButtonTitle:nil
+                                                   otherButtonTitles:@"确定", nil];
+            [alertV show];
             break;
         }
     }
@@ -212,12 +203,7 @@
 - (void)serviceDidDiscoverPeripheral:(CBPeripheral *)peripheral
                     advertisementData:(NSDictionary *)advertisementData{
     NSString *adDataStr = [[advertisementData objectForKey:CBAdvertisementDataManufacturerDataKey] description];
-    /*if (!adDataStr) {
-        NSLog(@"广播数据为空");
-        return;
-    }*/
-    NSLog(@"广播数据adDataStr:%@", adDataStr);
-    
+    NSLog(@"设备名:%@  广播数据:%@", peripheral.name, adDataStr);
     if (![[[OCBTLECentralManager shareCentralManager] arrFoundPeripherals] containsObject:peripheral]){
         [[[OCBTLECentralManager shareCentralManager] arrFoundPeripherals] addObject:peripheral];
     }
@@ -228,15 +214,19 @@
     NSLogCurrentFunction
     self.service = service;
     [self.service start];
-    [self.service.peripheral readRSSI];
+    self.btnConnect.tag = 2002;
+    [self.btnConnect setTitle:@"断开蓝牙" forState:UIControlStateNormal];
 }
 
 - (void)serviceDidFailToConnect:(CBPeripheral *)peripheral{
+    
 }
 
 - (void)serviceDidDisconnect:(OCBTLEPeripheralService*)service{
     NSLogCurrentFunction
     [self cleanUpPeriphral];
+    self.btnConnect.tag = 2001;
+    [self.btnConnect setTitle:@"连接蓝牙" forState:UIControlStateNormal];
 }
 
 - (void)peripheralDidReadValue:(OCBTLEPeripheralService *)service
@@ -246,7 +236,138 @@
     if (!data) {
         return;
     }
-    self.service = service;
+    if (service != self.service) {
+        return;
+    }
+    if (data.length >= 3) {
+        [self.mutableData appendData:data];
+        /** data 的第 2 字节最高位如果为 1 则表示本条指令请求结束，否则后面还有数据 */
+        NSString *str1 = [data.description substringWithRange:NSMakeRange(3, 1)];
+        if ([str1 intValue] >= 8) {
+            UInt8 xval[1] = {0};
+            [data getBytes:&xval range:NSMakeRange(0, 1)];
+            NSLog(@"当前指令请求完成:%#04x \n当前指令内容:%@ \n下一指令请求开始", *xval, self.mutableData);
+            /** 在下一条指令请求开始前需要将 mtaableData 对象清空 */
+            [self resetDataBytes];
+            *xval = *xval - 1;
+            if (*xval >= 0x10) {
+                /** 7天历史(步数、卡路里、距离)记录:0x24~0x10 */
+                switch (*xval) {
+                    case 0x10:{
+                        
+                    }
+                        break;
+                        
+                    case 0x11:{
+                        
+                    }
+                        break;
+                        
+                    case 0x12:{
+                        
+                    }
+                        break;
+                        
+                    case 0x13:{
+                        
+                    }
+                        break;
+                        
+                    case 0x14:{
+                        
+                    }
+                        break;
+                        
+                    case 0x15:{
+                        
+                    }
+                        break;
+                        
+                    case 0x16:{
+                        
+                    }
+                        break;
+                        
+                    case 0x17:{
+                        
+                    }
+                        break;
+                        
+                    case 0x18:{
+                        
+                    }
+                        break;
+                        
+                    case 0x19:{
+                        
+                    }
+                        break;
+                        
+                    case 0x1a:{
+                        
+                    }
+                        break;
+                        
+                    case 0x1b:{
+                        
+                    }
+                        break;
+                        
+                    case 0x1c:{
+                        
+                    }
+                        break;
+                        
+                    case 0x1d:{
+                        
+                    }
+                        break;
+                        
+                    case 0x1f:{
+                        
+                    }
+                        break;
+                        
+                    case 0x20:{
+                        
+                    }
+                        break;
+                        
+                    case 0x21:{
+                        
+                    }
+                        break;
+                        
+                    case 0x22:{
+                        
+                    }
+                        break;
+                        
+                    case 0x23:{
+                        
+                    }
+                        break;
+                        
+                    case 0x24:{
+                        
+                    }
+                        break;
+                        
+                    default:
+                        break;
+                }
+                [self writeValue:*xval];
+            }else{
+                NSLog(@"7天历史记录请求结束！");
+            }
+        }
+    }
+}
+
+/** 清空用于存储从手环返回来的数据的对象的内容，以便请求下一指令时存储从手环返回来的数据 */
+- (void)resetDataBytes{
+    [self.mutableData resetBytesInRange:NSMakeRange(0, self.mutableData.length)];
+    self.mutableData.length = 0;
 }
 
 - (void)writeValue{
@@ -279,12 +400,20 @@
 }
 
 - (void)btnScanningPress:(id)sender{
-    NSTimeInterval time = [NSDate timeIntervalSinceReferenceDate];
-    NSLog(@"搜索蓝牙");
-    [self textFieldResignFirstResponder];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(scanningPeriphral) object:sender];
-    [self performSelector:@selector(scanningPeriphral) withObject:sender afterDelay:0.2f];
-    NSLog(@"%lf", 1000*([NSDate timeIntervalSinceReferenceDate] - time));
+    if (self.btnScanning.tag == 1001) {
+        self.btnScanning.tag = 1002;
+        [self.btnScanning setTitle:@"停止搜索蓝牙" forState:UIControlStateNormal];
+        NSTimeInterval time = [NSDate timeIntervalSinceReferenceDate];
+        NSLog(@"搜索蓝牙");
+        [self textFieldResignFirstResponder];
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(scanningPeriphral) object:sender];
+        [self performSelector:@selector(scanningPeriphral) withObject:sender afterDelay:0.2f];
+        NSLog(@"%lf", 1000*([NSDate timeIntervalSinceReferenceDate] - time));
+    }else {
+        self.btnScanning.tag = 1001;
+        [self.btnScanning setTitle:@"搜索蓝牙" forState:UIControlStateNormal];
+        [self stopScanningPeriphral];
+    }
 }
 
 - (void)btnCleanUp:(id)sender{
@@ -294,10 +423,14 @@
 }
 
 - (void)btnConnect:(id)sender{
-    [self textFieldResignFirstResponder];
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectPerphral) object:sender];
-    [self performSelector:@selector(connectPerphral) withObject:sender afterDelay:0.2f];
-    
+    UIButton *btn = (UIButton *)sender;
+    if (btn.tag == 2001) {
+        [self textFieldResignFirstResponder];
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectPerphral) object:sender];
+        [self performSelector:@selector(connectPerphral) withObject:sender afterDelay:0.2f];
+    }else {
+        [self btnDisconnect:sender];
+    }
 }
 
 - (void)btnDisconnect:(id)sender{
@@ -329,24 +462,19 @@
 
 - (void)scanningPeriphral{
     NSString *str = self.textFieldDevice.text;
-    /*if (str == nil || [str isEqualToString:@""]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"请输入设备 4 字符ID", @"请输入设备ID")
-                                                            message:nil
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"确定", @"确定")
-                                                  otherButtonTitles:nil];
-        [alertView show];
-        return;
-    }*/
     [self cleanUpPeriphral];
+    
     OCBTLECentralManager *CentralManager = [OCBTLECentralManager shareCentralManager];
-    if (!(str == nil || [str isEqualToString:@""])) {
-        CentralManager.strDeviceName = str;
-    }
+    CentralManager.strDeviceName = str;
     if (!CentralManager.peripheralDelegate) {
         CentralManager.peripheralDelegate = self;
     }
     [CentralManager startScanningForUUIDString:nil];
+}
+
+- (void)stopScanningPeriphral{
+    OCBTLECentralManager *ble = [OCBTLECentralManager shareCentralManager];
+    [ble stopScanning];
 }
 
 - (void)cleanUpPeriphral{
@@ -355,6 +483,10 @@
     [ble cleanup];
     [self.arrayData removeAllObjects];
     [self.tableView reloadData];
+}
+
+- (void)connectPerphral{
+    [self connectPerphral:0];
 }
 
 - (void)connectPerphral:(NSInteger)index{
@@ -408,7 +540,7 @@
     }
     UInt8 val =val_p;
     NSData *fd = [[NSData alloc] initWithBytes:&val length:1];
-    if (val_p == 0x07) {
+    if (val_p == 0x07 || (val_p >= 0x09 && val_p <= 0x24)) {
         [self.service writeValue:fd];
     }else {
         [self.service readValue:fd];

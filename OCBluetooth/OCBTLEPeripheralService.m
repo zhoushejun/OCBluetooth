@@ -14,12 +14,22 @@ NSString *kBLEPeripheralUUIDString = nil;
 NSString *kBLEPeripheralServicesUUIDString = @"6e400001-b5a3-f393-e0a9-e50e24dcca9e";
 NSString *kBLEPeripheralWriteCharacteristicUUIDString = @"6e400002-b5a3-f393-e0a9-e50e24dcca9e";
 NSString *kBLEPeripheralReadCharacteristicUUIDString = @"6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+
 /*
 NSString *kBLEPeripheralUUIDString = @"4EEFFDDF-ABFB-8275-B3D3-0FC84D3E879C";
 NSString *kBLEPeripheralServicesUUIDString = @"00001530-1212-EFDE-1523-785FEABCD123";//空中升级：长按21秒
 NSString *kBLEPeripheralWriteCharacteristicUUIDString = @"00001532-1212-EFDE-1523-785FEABCD123";
 NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523-785FEABCD123";
 */
+
+/** 电子秤 */
+/*
+NSString *kBLEPeripheralUUIDString = nil;
+NSString *kBLEPeripheralServicesUUIDString = @"FFCC";
+NSString *kBLEPeripheralWriteCharacteristicUUIDString = @"FFC1";
+NSString *kBLEPeripheralReadCharacteristicUUIDString = @"FFC2";
+*/
+
 @interface OCBTLEPeripheralService ()<CBPeripheralDelegate>{
 @private
     CBPeripheral		*servicePeripheral;
@@ -154,7 +164,6 @@ NSString *kBLEPeripheralReadCharacteristicUUIDString = @"00001531-1212-EFDE-1523
 
 /** 处理蓝牙设备发过来的数据 */
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
-//    NSLogCurrentFunction;
     if (peripheral != servicePeripheral) {
         NSLog(@"Wrong peripheral\n");
         return ;
