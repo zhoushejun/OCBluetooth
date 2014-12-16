@@ -545,7 +545,6 @@
     }else {
         [self.service readValue:fd];
     }
-    
 }
 
 //请求睡眠数据。
