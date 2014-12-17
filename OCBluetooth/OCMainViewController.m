@@ -8,6 +8,7 @@
 
 #import "OCMainViewController.h"
 #import "OCBTLECentralManager.h"
+#import "OCHandBandDataModel.h"
 
 /** @name const */
 // @{
@@ -44,8 +45,11 @@
     
     _mutableData = [NSMutableData dataWithCapacity:40];
     
+    int x0 = 20;
+    int space = 40;
+    int w = (SCREEN_WIDTH - 2*x0 - space)/2;
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn.frame = CGRectMake(20, 60, 120, 44);
+    btn.frame = CGRectMake(20, 60, w, 44);
     btn.backgroundColor = [UIColor grayColor];
     btn.tag = 1001;     ///< 1001:搜索蓝牙   1002:停止搜索蓝牙
     [btn setTitle:@"搜索蓝牙" forState:UIControlStateNormal];
@@ -56,7 +60,7 @@
     [self.view addSubview:btn];
     
     UIButton *btnCnt = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnCnt.frame = CGRectMake(180, 60, 120, 44);
+    btnCnt.frame = CGRectMake(x0 + w + space, 60, w, 44);
     btnCnt.backgroundColor = [UIColor grayColor];
     btnCnt.tag = 1001;  ///< 2001:连接蓝牙  2001:断开蓝牙
     [btnCnt setTitle:@"连接蓝牙" forState:UIControlStateNormal];
@@ -67,20 +71,20 @@
     [self.view addSubview:btnCnt];
     
     UIButton *btnCleanUp = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnCleanUp.frame = CGRectMake(20, 110, 120, 44);
+    btnCleanUp.frame = CGRectMake(20, 110, w, 44);
     [btnCleanUp setTitle:@"清空" forState:UIControlStateNormal];
     btnCleanUp.backgroundColor = [UIColor grayColor];
     [btnCleanUp addTarget:self action:@selector(btnCleanUp:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnCleanUp];
     
     UIButton *btnUpdateFirmware = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnUpdateFirmware.frame = CGRectMake(20, 160, 120, 44);
+    btnUpdateFirmware.frame = CGRectMake(20, 160, w, 44);
     [btnUpdateFirmware setTitle:@"发送指令" forState:UIControlStateNormal];
     btnUpdateFirmware.backgroundColor = [UIColor grayColor];
     [btnUpdateFirmware addTarget:self action:@selector(btnUpdateFirmware:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnUpdateFirmware];
     
-    UITextField *textFieldDevice = [[UITextField alloc] initWithFrame:CGRectMake(180, 110, 120, 44)];
+    UITextField *textFieldDevice = [[UITextField alloc] initWithFrame:CGRectMake(x0 + w + space, 110, w, 44)];
     textFieldDevice.backgroundColor = [UIColor grayColor];
     textFieldDevice.textColor = [UIColor  whiteColor];
     textFieldDevice.textAlignment = NSTextAlignmentCenter;
@@ -90,7 +94,7 @@
     self.textFieldDevice = textFieldDevice;
     [self.view addSubview:self.textFieldDevice];
     
-    UITextField *textFieldDemand = [[UITextField alloc] initWithFrame:CGRectMake(180, 160, 120, 44)];
+    UITextField *textFieldDemand = [[UITextField alloc] initWithFrame:CGRectMake(x0 + w + space, 160, w, 44)];
     textFieldDemand.backgroundColor = [UIColor grayColor];
     textFieldDemand.textColor = [UIColor  whiteColor];
     textFieldDemand.textAlignment = NSTextAlignmentCenter;
@@ -100,7 +104,7 @@
     self.textFieldDemand = textFieldDemand;
     [self.view addSubview:self.textFieldDemand];
     
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 300, 300, SCREEN_HEIGHT - 300-10)];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 300, SCREEN_WIDTH - 20, SCREEN_HEIGHT - 300-10)];
     tableView.dataSource = self;
     tableView.delegate = self;
     self.tableView = tableView;
@@ -231,19 +235,21 @@
 
 - (void)peripheralDidReadValue:(OCBTLEPeripheralService *)service
                           value:(NSData *)data{
-    NSLog(@"读到的数据=%@",[data description]);
-    [OCTool addALaryerOnWindow:[data description]];
-    if (!data) {
-        return;
-    }
     if (service != self.service) {
         return;
     }
-    if (data.length >= 3) {
+    NSLog(@"读到的数据=%@",[data description]);
+    if (!data) {
+        return;
+    }
+    [OCTool addALaryerOnWindow:[data description]];
+    if (data.length >= 3) {/** 返回的数据data至少包括1字节id(代表指令)、1字节No(代表第N个数据包)、1字节length(代表本包(第N个数据包)的长度) */
         [self.mutableData appendData:data];
         /** data 的第 2 字节最高位如果为 1 则表示本条指令请求结束，否则后面还有数据 */
         NSString *str1 = [data.description substringWithRange:NSMakeRange(3, 1)];
-        if ([str1 intValue] >= 8) {
+        int n = [str1 intValue];
+        n = n >> 3;
+        if (n == 1) {
             UInt8 xval[1] = {0};
             [data getBytes:&xval range:NSMakeRange(0, 1)];
             NSLog(@"当前指令请求完成:%#04x \n当前指令内容:%@ \n下一指令请求开始", *xval, self.mutableData);
