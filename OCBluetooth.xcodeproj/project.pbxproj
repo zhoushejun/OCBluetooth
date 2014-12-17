@@ -17,6 +17,7 @@
 		18A5916D19F6A28300EA4F65 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A5916C19F6A28300EA4F65 /* CoreBluetooth.framework */; };
 		18AC72B619F81073006E39EA /* OCBTLECentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC72B519F81073006E39EA /* OCBTLECentralManager.m */; };
 		18AC72B919F81259006E39EA /* OCBTLEPeripheralService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */; };
+		6364E57B1A4111B400320F79 /* OCHandBandDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6364E57A1A4111B400320F79 /* OCHandBandDataModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,8 @@
 		18AC72B519F81073006E39EA /* OCBTLECentralManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBTLECentralManager.m; sourceTree = "<group>"; };
 		18AC72B719F81259006E39EA /* OCBTLEPeripheralService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBTLEPeripheralService.h; sourceTree = "<group>"; };
 		18AC72B819F81259006E39EA /* OCBTLEPeripheralService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBTLEPeripheralService.m; sourceTree = "<group>"; };
+		6364E5791A4111B400320F79 /* OCHandBandDataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCHandBandDataModel.h; sourceTree = "<group>"; };
+		6364E57A1A4111B400320F79 /* OCHandBandDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCHandBandDataModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +154,7 @@
 		633677CE1A3AB4A3009EBC4A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				6364E5781A41118300320F79 /* DataModel */,
 				633677D01A3AB4E1009EBC4A /* BTLE */,
 			);
 			name = Model;
@@ -183,6 +187,15 @@
 				18A5916919F6A19E00EA4F65 /* OCMainViewController.m */,
 			);
 			name = MainViewController;
+			sourceTree = "<group>";
+		};
+		6364E5781A41118300320F79 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				6364E5791A4111B400320F79 /* OCHandBandDataModel.h */,
+				6364E57A1A4111B400320F79 /* OCHandBandDataModel.m */,
+			);
+			name = DataModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -284,6 +297,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6364E57B1A4111B400320F79 /* OCHandBandDataModel.m in Sources */,
 				18AC72B619F81073006E39EA /* OCBTLECentralManager.m in Sources */,
 				18A5914119F695D400EA4F65 /* AppDelegate.m in Sources */,
 				18A5913E19F695D400EA4F65 /* main.m in Sources */,
