@@ -14,7 +14,7 @@
 // @{
 #define UNSUPORTBLUETOOTH_4_0 @"您的设备不支持蓝牙4.0"
 /** 搜索的设备名称 */
-#define DEFAULT_DEVICE_NAME @"C31A"
+#define DEFAULT_DEVICE_NAME @"F239"
 /** 向手环发送的命令 */
 #define SEND_COMMAND @"0x24"
 // @}end of const
@@ -239,141 +239,46 @@
         return;
     }
     NSLog(@"读到的数据=%@",[data description]);
-    if (!data) {
+    [OCTool addALaryerOnWindow:[data description]];
+    /** 返回的数据data至少包括1字节id(代表指令)、1字节No(代表第N个数据包)、1字节length(代表本包(第N个数据包)的长度) */
+    if (!data || data.length < 3) {
         return;
     }
-    [OCTool addALaryerOnWindow:[data description]];
-    if (data.length >= 3) {/** 返回的数据data至少包括1字节id(代表指令)、1字节No(代表第N个数据包)、1字节length(代表本包(第N个数据包)的长度) */
-        [self.mutableData appendData:data];
-        /** data 的第 2 字节最高位如果为 1 则表示本条指令请求结束，否则后面还有数据 */
-        NSString *str1 = [data.description substringWithRange:NSMakeRange(3, 1)];
-        int n = [str1 intValue];
-        n = n >> 3;
-        if (n == 1) {
-            UInt8 xval[1] = {0};
-            [data getBytes:&xval range:NSMakeRange(0, 1)];
-            NSLog(@"当前指令请求完成:%#04x \n当前指令内容:%@ \n下一指令请求开始", *xval, self.mutableData);
-            /** 在下一条指令请求开始前需要将 mtaableData 对象清空 */
-            [self resetDataBytes];
-            *xval = *xval - 1;
-            if (*xval >= 0x10) {
-                /** 7天历史(步数、卡路里、距离)记录:0x24~0x10 */
-                switch (*xval) {
-                    case 0x10:{
-                        
-                    }
-                        break;
-                        
-                    case 0x11:{
-                        
-                    }
-                        break;
-                        
-                    case 0x12:{
-                        
-                    }
-                        break;
-                        
-                    case 0x13:{
-                        
-                    }
-                        break;
-                        
-                    case 0x14:{
-                        
-                    }
-                        break;
-                        
-                    case 0x15:{
-                        
-                    }
-                        break;
-                        
-                    case 0x16:{
-                        
-                    }
-                        break;
-                        
-                    case 0x17:{
-                        
-                    }
-                        break;
-                        
-                    case 0x18:{
-                        
-                    }
-                        break;
-                        
-                    case 0x19:{
-                        
-                    }
-                        break;
-                        
-                    case 0x1a:{
-                        
-                    }
-                        break;
-                        
-                    case 0x1b:{
-                        
-                    }
-                        break;
-                        
-                    case 0x1c:{
-                        
-                    }
-                        break;
-                        
-                    case 0x1d:{
-                        
-                    }
-                        break;
-                        
-                    case 0x1f:{
-                        
-                    }
-                        break;
-                        
-                    case 0x20:{
-                        
-                    }
-                        break;
-                        
-                    case 0x21:{
-                        
-                    }
-                        break;
-                        
-                    case 0x22:{
-                        
-                    }
-                        break;
-                        
-                    case 0x23:{
-                        
-                    }
-                        break;
-                        
-                    case 0x24:{
-                        
-                    }
-                        break;
-                        
-                    default:
-                        break;
-                }
-                [self writeValue:*xval];
-            }else{
-                NSLog(@"7天历史记录请求结束！");
-            }
-        }
+    [self.mutableData appendData:data];
+    /** data 的第 2 字节最高位如果为 1 则表示本条指令请求结束，否则后面还有数据 */
+    NSString *strFinal = [data.description substringWithRange:NSMakeRange(3, 1)];
+    int n = [strFinal intValue];
+    n = n >> 3;
+    /** n 为1则说明是最后一条数据 */
+    if (n == 1) {
+        /** 在进行下一条数据请求前需要解析本条指令请求完的数据，然后将其清空 */
+        [[OCHandBandDataModel sharedInstance] analyzeHBData:self.mutableData];
+        [self clearDataBytes];
+        [self shouldWriteValue:data];
     }
 }
 
 /** 清空用于存储从手环返回来的数据的对象的内容，以便请求下一指令时存储从手环返回来的数据 */
-- (void)resetDataBytes{
+- (void)clearDataBytes{
     [self.mutableData resetBytesInRange:NSMakeRange(0, self.mutableData.length)];
     self.mutableData.length = 0;
+}
+
+/** 处理是否向手环请求下一条数据 */
+- (void)shouldWriteValue:(NSData *)data{
+    UInt8 xval[1] = {0};
+    [data getBytes:&xval range:NSMakeRange(0, 1)];
+    NSLog(@"当前指令请求完成:%#04x", xval[0]);
+    xval[0] = xval[0] - 1;
+    NSString *strDate = [OCTool historyDateStringFrom:xval[0]];
+    while (![[OCHandBandDataModel sharedInstance] shouldRequestDataForDate:strDate]) {
+        xval[0] = xval[0] - 1;
+    }
+    if (xval[0] >= 0x10) {
+        [self writeValue:xval[0]];
+    }else{
+        NSLog(@"7天历史记录请求结束！");
+    }
 }
 
 - (void)writeValue{
@@ -539,14 +444,14 @@
 
 -(void)writeValue:(UInt8)val_p
 {
-    NSLog(@"%#04x", val_p);
+    NSLog(@"发送的指令:%#04x", val_p);
     if (!self.service) {
         NSLog(@"service is nil");
         return;
     }
     UInt8 val =val_p;
     NSData *fd = [[NSData alloc] initWithBytes:&val length:1];
-    if (val_p == 0x07 || (val_p >= 0x09 && val_p <= 0x24)) {
+    if (val_p == 0x01 ||val_p == 0x02 || (val_p >= 0x07 && val_p <= 0x24)) {
         [self.service writeValue:fd];
     }else {
         [self.service readValue:fd];
